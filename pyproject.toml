@@ -1,0 +1,17 @@
+[build-system]
+requires = ["uv_build>=0.9.12,<0.10.0"]
+build-backend = "uv_build"
+
+[project]
+name = "ptrnet"
+version = "0.1.0"
+description = "Reinforcement Learning for the Vehicle Routing Problem (JAX/Flax)"
+readme = "README.md"
+authors = [
+    { name = "Gideon Oludeyi", email = "49620086+gideonoludeyi@users.noreply.github.com" },
+]
+requires-python = ">=3.12"
+dependencies = ["chex>=0.1.91", "flax>=0.12.2", "jax>=0.8.2"]
+
+[dependency-groups]
+dev = ["ipykernel>=7.1.0", "ruff>=0.14.10"]

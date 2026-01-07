@@ -25,6 +25,7 @@ class Embed(nnx.Module):
             rngs=rngs,
         )
         self.input_dim = input_dim
+        self.output_dim = output_dim
 
     def __call__(self, x: jax.Array):
         chex.assert_shape(x, (None, None, self.input_dim))
@@ -76,6 +77,20 @@ class RNNDecoder(nnx.Module):
             rngs=rngs,
         )
         return output, carry
+
+    def init(
+        self,
+        input_shape: tuple[int, ...],
+        time_major: bool | None = None,
+        rngs: nnx.Rngs | None = None,
+    ):
+        ndim = len(input_shape)
+        # https://github.com/google/flax/blob/v0.12.2/flax/nnx/nn/recurrent.py#L831
+        time_axis = 0 if time_major else ndim - (self.rnn.cell.num_feature_axes + 1)
+        # https://github.com/google/flax/blob/v0.12.2/flax/nnx/nn/recurrent.py#L860-L862
+        return self.rnn.cell.initialize_carry(
+            input_shape[:time_axis] + input_shape[time_axis + 1 :], rngs=rngs
+        )
 
     def h(self, carry: tuple[jax.Array, jax.Array]):
         return carry[1]
@@ -250,3 +265,13 @@ class PointerNetwork(nnx.Module):
         h: jax.Array = self.decoder.h(carry)  # type: ignore - infallible: carry is not None
         logits = self.attention(staticembed, dynamicembed, h)
         return logits, carry
+
+    def init(
+        self,
+        batch_dim: int,
+        *,
+        time_major: bool | None = None,
+        rngs: nnx.Rngs | None = None,
+    ):
+        x0embed_shape = (batch_dim, self.staticembedding.output_dim, 1)
+        return self.decoder.init(x0embed_shape, time_major=time_major, rngs=rngs)

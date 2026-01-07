@@ -18,6 +18,19 @@ class Actor:
         self.ptrnet = ptrnet
         self.greedy = greedy
 
+    def init(
+        self,
+        batch_dim: int,
+        *,
+        time_major: bool | None = None,
+        rngs: nnx.Rngs | None = None,
+    ):
+        return self.ptrnet.init(
+            batch_dim=batch_dim,
+            time_major=time_major,
+            rngs=rngs,
+        )
+
     def action(
         self,
         static: jax.Array,  # (B, 2, N)

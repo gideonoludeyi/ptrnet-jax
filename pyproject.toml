@@ -11,7 +11,12 @@ authors = [
     { name = "Gideon Oludeyi", email = "49620086+gideonoludeyi@users.noreply.github.com" },
 ]
 requires-python = ">=3.12"
-dependencies = ["chex>=0.1.91", "flax>=0.12.2", "jax>=0.8.2"]
+dependencies = [
+    "chex>=0.1.91",
+    "flax>=0.12.2",
+    "jax>=0.8.2",
+    "optax>=0.2.6",
+]
 
 [dependency-groups]
 dev = ["ipykernel>=7.1.0", "ruff>=0.14.10"]
